@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dia Lockscreen Demo with Flight Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overscroll-behavior: none; /* Prevents pull-to-refresh on mobile */
+            /* Ensure body itself doesn't have unexpected margins/padding */
+            margin: 0;
+            padding: 0;
+            /* Flexbox to center the phone screen if it doesn't take full height due to margins */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
+            background-color: #1f2937; /* Match body bg-gray-800 for consistency */
+        }
+        .phone-screen {
+            width: 100%;
+            max-width: 420px; /* Typical phone width */
+            height: 80vh; /* Adjusted height: 100vh - 10vh (top margin) - 10vh (bottom margin) */
+            margin-left: auto; /* Keep horizontal centering */
+            margin-right: auto; /* Keep horizontal centering */
+            margin-top: 10vh; /* Added top margin */
+            margin-bottom: 10vh; /* Added bottom margin */
+            background: linear-gradient(135deg, #6B7280 0%, #374151 100%); /* Dark gray gradient wallpaper */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden; /* Ensures content stays within screen bounds */
+            border-radius: 30px; /* Rounded corners for the phone */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        /* Custom scrollbar for better aesthetics if content overflows */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        .status-bar-icon {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
+        .quick-action-button {
+            background-color: rgba(40, 40, 40, 0.75); /* Darker, more iOS-like translucent background */
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            /* Removed box-shadow to match iOS flat design for these buttons */
+        }
+        /* Dia app icon style */
+        .dia-app-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #8B5CF6; /* Violet color for Dia icon */
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="bg-gray-800"> <div class="phone-screen text-white">
+        <div class="px-6 py-3 flex justify-between items-center">
+            <span id="currentTime" class="text-sm font-medium">9:45 PM</span> <div class="flex items-center space-x-2">
+                <svg class="status-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                <svg class="status-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01"></path><path d="M7 20v-4"></path><path d="M12 20v-8"></path><path d="M17 20V8"></path><path d="M22 20V4"></path></svg>
+                <span class="text-sm font-medium">95%</span>
+                <svg class="status-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3.6a.6.6 0 0 1-.6-.6v-2.8a.6.6 0 0 1 .6-.6H5Zm14 0h1.4a.6.6 0 0 0 .6-.6v-2.8a.6.6 0 0 0-.6-.6H19Z"></path><path d="M17 6H7C5.34 6 4 7.34 4 9v6c0 1.66 1.34 3 3 3h10c1.66 0 3-1.34 3-3V9c0-1.66-1.34-3-3-3Z"></path></svg>
+            </div>
+        </div>
+
+        <div class="flex-grow flex flex-col justify-between px-6 pb-8 pt-4">
+            <div class="text-center mt-8">
+                <div id="mainTime" class="text-7xl font-bold">09:45</div> <div id="mainDate" class="text-xl text-gray-300">Monday, May 19</div>
+            </div>
+
+            <div class="bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-md p-4 rounded-3xl shadow-xl w-full max-w-md mx-auto my-6 text-white">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center">
+                        <div class="dia-app-icon mr-2">D</div>
+                        <div> <span class="font-semibold text-gray-200 text-base leading-tight">Dia</span>
+                            <p class="text-xs text-gray-400 leading-tight">your mom's flight</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-5 h-5 bg-blue-600 rounded-md flex items-center justify-center mr-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white -rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-300 tracking-wide">UA1584</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-[auto_1fr_auto_1fr_auto] items-center gap-x-2 mb-2">
+                    <span class="text-2xl font-semibold text-left">ORD</span>
+                    <span class="text-sm font-medium text-gray-300 text-right">4:00 PM</span> <div class="text-gray-500 flex items-center justify-center space-x-0.5 pt-0.5" aria-hidden="true">
+                        <span class="text-gray-500 text-[7px]">●</span><span class="text-gray-500 text-[7px]">●</span><span class="text-gray-500 text-[7px]">●</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 -rotate-45 text-gray-400 mx-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        <span class="text-gray-500 text-[7px]">●</span><span class="text-gray-500 text-[7px]">●</span><span class="text-gray-500 text-[7px]">●</span>
+                    </div>
+                    <span class="text-sm font-medium text-gray-300 text-left">10:15 PM</span> <span class="text-2xl font-semibold text-right">SFO</span>
+                </div>
+
+                <div class="flex justify-between items-center text-sm text-gray-200 mb-3">
+                    <span class="font-medium">SFO • Gate B14</span>
+                    <span class="font-medium text-green-400 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /> </svg>
+                        Landing in 30 min
+                    </span>
+                </div>
+
+                <div class="border-t border-gray-700 pt-3 mt-3 flex justify-between items-center">
+                    <p class="text-sm text-white">Drive time to airport: <span class="font-semibold">~32min</span> <span class="text-xs text-gray-400">(Live)</span></p>
+                    <button class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-3 rounded-lg text-xs flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.524 4.844A.5.5 0 0 1 12 5.156v4.438a.5.5 0 0 1-.976.188L10.04 7.126A1.5 1.5 0 0 0 8.692 6.5H7.308a1.5 1.5 0 0 0-1.348.626L4.976 9.782a.5.5 0 0 1-.976-.188V5.156a.5.5 0 0 1 .476-.499l5.5-1.5a.5.5 0 0 1 .548.187zM3.428 10.404l1.482-2.612A.5.5 0 0 1 5.308 7.5h5.384a.5.5 0 0 1 .398.292l1.482 2.612C12.82 10.753 12.37 11 11.938 11H4.062c-.432 0-.882-.247-1.032-.596zM13 2.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-1z"/>
+                        </svg>
+                        Book Uber
+                    </button>
+                </div>
+            </div>
+            <div class="space-y-2 my-4 opacity-60 text-center">
+                <div class="bg-gray-700 bg-opacity-50 p-3 rounded-xl text-sm">
+                    <span class="font-medium">Slack:</span> New message from #general
+                </div>
+                 <div class="bg-gray-700 bg-opacity-50 p-3 rounded-xl text-sm">
+                    <span class="font-medium">Gmail:</span> (2) New emails
+                </div>
+            </div>
+
+            <div class="flex-grow"></div> <div class="mt-auto">
+                <div class="flex justify-between items-center mb-6 px-4">
+                    <button class="quick-action-button" aria-label="Torch">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-white opacity-90">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.25 3.75C8.25 2.92157 8.92157 2.25 9.75 2.25H14.25C15.0784 2.25 15.75 2.92157 15.75 3.75V4.5H8.25V3.75ZM6.75 6V3.75C6.75 2.09315 8.09315 0.75 9.75 0.75H14.25C15.9069 0.75 17.25 2.09315 17.25 3.75V6H18.75C19.9926 6 21 7.00736 21 8.25V19.5C21 20.7426 19.9926 21.75 18.75 21.75H5.25C4.00736 21.75 3 20.7426 3 19.5V8.25C3 7.00736 4.00736 6 5.25 6H6.75ZM5.25 7.5H18.75V19.5H5.25V7.5Z" />
+                            <path d="M12 17.25C10.4812 17.25 9.25 16.0188 9.25 14.5C9.25 12.9812 10.4812 11.75 12 11.75C13.5188 11.75 14.75 12.9812 14.75 14.5C14.75 16.0188 13.5188 17.25 12 17.25Z"/>
+                        </svg>
+                    </button>
+                    <button class="quick-action-button" aria-label="Camera">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                    </button>
+                </div>
+                <p class="text-center text-sm text-gray-300 font-medium">Swipe up to unlock</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script to update time and date dynamically
+        function updateTime() {
+            const now = new Date(); // Get current date and time
+            
+            // Forcing lockscreen time to 9:45 PM for consistency with the demo's flight status
+            const displayHours = 21; // 9 PM
+            const displayMinutes = 45; // 45 minutes
+            
+            const ampm = displayHours >= 12 ? 'PM' : 'AM'; // Determine AM/PM
+            const formattedHours = displayHours % 12 || 12; // Convert to 12-hour format (0 becomes 12)
+            const formattedMinutes = displayMinutes < 10 ? '0' + displayMinutes : displayMinutes; // Add leading zero to minutes if needed
+
+            // Arrays for day and month names
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            // Use actual current date for the date display
+            const dayName = days[now.getDay()]; 
+            const monthName = months[now.getMonth()]; 
+            const dayOfMonth = now.getDate(); 
+
+            // Update the time in the status bar
+            const currentTimeEl = document.getElementById('currentTime');
+            if (currentTimeEl) {
+                currentTimeEl.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
+            }
+            
+            // Update the main time display
+            const mainTimeEl = document.getElementById('mainTime');
+            if (mainTimeEl) {
+                mainTimeEl.textContent = `${formattedHours}:${formattedMinutes}`;
+            }
+
+            // Update the main date display
+            const mainDateEl = document.getElementById('mainDate');
+            if (mainDateEl) {
+                mainDateEl.textContent = `${dayName}, ${monthName} ${dayOfMonth}`;
+            }
+        }
+
+        // Update time immediately on page load
+        updateTime();
+        // For this demo, the lockscreen time is static. If you want a live clock, 
+        // you would remove the forced displayHours/displayMinutes and uncomment setInterval.
+        // setInterval(updateTime, 1000); 
+    </script>
+
+</body>
+</html>
