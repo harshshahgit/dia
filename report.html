@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dia Lockscreen Demo with AI Report Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overscroll-behavior: none; /* Prevents pull-to-refresh on mobile */
+        }
+        .phone-screen {
+            width: 100%;
+            max-width: 420px; /* Typical phone width */
+            height: 100vh; /* Full viewport height */
+            margin: auto;
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%); /* Darker gradient for the phone body */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden; /* Ensures content stays within screen bounds */
+            border-radius: 30px; /* Rounded corners for the phone */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        /* Custom scrollbar for better aesthetics if content overflows */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        .status-bar-icon {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
+        .quick-action-button {
+            background-color: rgba(55, 65, 81, 0.75); /* Slightly lighter dark translucent */
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background-color 0.2s ease;
+        }
+        .quick-action-button:hover {
+            background-color: rgba(75, 85, 99, 0.9);
+        }
+        .dia-app-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #8B5CF6; /* Violet color for Dia icon */
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .progress-bar-container {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #A78BFA;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.5s ease-in-out;
+        }
+        .progress-step {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #9CA3AF; /* Lighter gray for inactive steps */
+            margin-bottom: 4px;
+        }
+        .progress-step.active {
+            color: #D1D5DB; /* Slightly brighter for active step */
+            font-weight: 500;
+        }
+        .progress-step.completed {
+            color: #A78BFA;
+        }
+        .progress-step-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .progress-step.completed .progress-step-icon {
+            background-color: #A78BFA;
+            color: white;
+        }
+        .progress-step.active .progress-step-icon {
+            border: 2px solid #A78BFA;
+            animation: pulse 1.5s infinite;
+        }
+        .progress-step:not(.completed):not(.active) .progress-step-icon {
+            border: 2px solid #4B5563; /* Darker gray border for pending steps */
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(167, 139, 250, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(167, 139, 250, 0); }
+        }
+
+        /* Report View Styles */
+        #reportViewContent {
+            /* Default display is flex when visible, controlled by JS */
+            background: linear-gradient(135deg, #374151 0%, #1F2937 100%); 
+            color: #E5E7EB;
+            padding: 0; 
+            display: flex; /* This is its state when visible */
+            flex-direction: column;
+            height: 100%; 
+        }
+        .report-header {
+            background-color: rgba(31, 41, 55, 0.8); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #4B5563;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .report-scrollable-area {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .report-card {
+            background-color: rgba(55, 65, 81, 0.7); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .report-card img {
+            border-radius: 8px;
+            margin-bottom: 12px;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+        .report-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #D1D5DB;
+            margin-bottom: 4px;
+        }
+        .report-card .price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #A78BFA; 
+            margin-bottom: 8px;
+        }
+        .report-card .details {
+            font-size: 0.85rem;
+            color: #9CA3AF;
+            margin-bottom: 4px;
+        }
+        .report-card .features-list {
+            list-style: disc;
+            list-style-position: inside;
+            padding-left: 4px;
+            font-size: 0.85rem;
+            color: #B0B6BF;
+            margin-bottom: 8px;
+        }
+        .report-card .pros-cons {
+            font-size: 0.85rem;
+        }
+        .report-card .pros-cons strong {
+            color: #A78BFA; 
+        }
+        .report-card .pros-cons .cons strong {
+            color: #F87171; 
+        }
+        .suitability-score {
+            display: inline-block;
+            background-color: #8B5CF6;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        .report-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #E5E7EB;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #4B5563;
+        }
+        .report-conclusion {
+            background-color: rgba(55, 65, 81, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: #D1D5DB;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <div class="phone-screen text-white">
+        <div id="lockscreenContent"> <div class="px-6 py-3 flex justify-between items-center">
+                <span id="currentTime" class="text-sm font-medium">9:45 PM</span>
+                <div class="flex items-center space-x-2">
+                    <svg class="status-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                    <svg class="status-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01"></path><path d="M7 20v-4"></path><path d="M12 20v-8"></path><path d="M17 20V8"></path><path d="M22 20V4"></path></svg>
+                    <span class="text-sm font-medium">95%</span>
+                    <svg class="status-bar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3.6a.6.6 0 0 1-.6-.6v-2.8a.6.6 0 0 1 .6-.6H5Zm14 0h1.4a.6.6 0 0 0 .6-.6v-2.8a.6.6 0 0 0-.6-.6H19Z"></path><path d="M17 6H7C5.34 6 4 7.34 4 9v6c0 1.66 1.34 3 3 3h10c1.66 0 3-1.34 3-3V9c0-1.66-1.34-3-3-3Z"></path></svg>
+                </div>
+            </div>
+
+            <div class="flex-grow flex flex-col justify-between px-6 pb-8 pt-4">
+                <div class="text-center mt-8">
+                    <div id="mainTime" class="text-7xl font-bold">09:45</div>
+                    <div id="mainDate" class="text-xl text-gray-400">Monday, May 19</div>
+                </div>
+
+                <div class="bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-md p-4 rounded-3xl shadow-xl w-full max-w-md mx-auto my-6 text-white">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center">
+                            <div class="dia-app-icon mr-2">D</div>
+                            <div>
+                                <span class="font-semibold text-gray-200 text-base leading-tight">Dia</span>
+                                <p class="text-xs text-gray-400 leading-tight" id="activitySubtitle">generating comparison report of housing options sent by Rizia</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="progress-bar-container">
+                            <div id="progressBarFill" class="progress-bar-fill"></div>
+                        </div>
+                        <div id="progressStepsContainer">
+                            </div>
+                    </div>
+
+                    <div class="border-t border-gray-700 pt-3 mt-3 flex justify-center items-center">
+                        <button id="actionButton" class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-lg text-sm flex items-center transition-all duration-300">
+                            <svg id="actionButtonIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <span id="actionButtonText">Check Progress</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-2 my-4 opacity-70 text-center">
+                    <div class="bg-gray-700 bg-opacity-50 p-3 rounded-xl text-sm backdrop-filter backdrop-blur-sm">
+                        <span class="font-medium">Slack:</span> New message from #general
+                    </div>
+                     <div class="bg-gray-700 bg-opacity-50 p-3 rounded-xl text-sm backdrop-filter backdrop-blur-sm">
+                        <span class="font-medium">Gmail:</span> (2) New emails
+                    </div>
+                </div>
+
+                <div class="flex-grow"></div>
+                <div class="mt-auto">
+                    <div class="flex justify-between items-center mb-6 px-4">
+                        <button class="quick-action-button" aria-label="Torch">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-white opacity-90">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.25 3.75C8.25 2.92157 8.92157 2.25 9.75 2.25H14.25C15.0784 2.25 15.75 2.92157 15.75 3.75V4.5H8.25V3.75ZM6.75 6V3.75C6.75 2.09315 8.09315 0.75 9.75 0.75H14.25C15.9069 0.75 17.25 2.09315 17.25 3.75V6H18.75C19.9926 6 21 7.00736 21 8.25V19.5C21 20.7426 19.9926 21.75 18.75 21.75H5.25C4.00736 21.75 3 20.7426 3 19.5V8.25C3 7.00736 4.00736 6 5.25 6H6.75ZM5.25 7.5H18.75V19.5H5.25V7.5Z" />
+                                <path d="M12 17.25C10.4812 17.25 9.25 16.0188 9.25 14.5C9.25 12.9812 10.4812 11.75 12 11.75C13.5188 11.75 14.75 12.9812 14.75 14.5C14.75 16.0188 13.5188 17.25 12 17.25Z"/>
+                            </svg>
+                        </button>
+                        <button class="quick-action-button" aria-label="Camera">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white opacity-90"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <p class="text-center text-sm text-gray-300 font-medium">Swipe up to unlock</p>
+                </div>
+            </div>
+        </div> <div id="reportViewContent" style="display: none;"> 
+            <div class="report-header">
+                <h2 class="text-lg font-semibold text-gray-100">Dia Housing Report</h2>
+                <button id="closeReportButton" class="text-violet-400 hover:text-violet-300 font-medium text-sm">
+                    Close
+                </button>
+            </div>
+            <div id="reportDataContainer" class="report-scrollable-area">
+                </div>
+        </div> </div> <script>
+        // --- DOM Elements ---
+        const currentTimeEl = document.getElementById('currentTime');
+        const mainTimeEl = document.getElementById('mainTime');
+        const mainDateEl = document.getElementById('mainDate');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressStepsContainer = document.getElementById('progressStepsContainer');
+        const activitySubtitle = document.getElementById('activitySubtitle');
+        const actionButton = document.getElementById('actionButton');
+        const actionButtonText = document.getElementById('actionButtonText');
+        const actionButtonIcon = document.getElementById('actionButtonIcon');
+        const lockscreenContent = document.getElementById('lockscreenContent');
+        const reportViewContent = document.getElementById('reportViewContent');
+        const reportDataContainer = document.getElementById('reportDataContainer');
+        const closeReportButton = document.getElementById('closeReportButton');
+
+        // --- Time and Date Update Function ---
+        function updateTime() {
+            const now = new Date();
+            const displayHours = 21; // 9 PM (static for demo consistency)
+            const displayMinutes = 45; // 45 minutes (static for demo consistency)
+            
+            const ampm = displayHours >= 12 ? 'PM' : 'AM';
+            const formattedHours = displayHours % 12 || 12;
+            const formattedMinutes = displayMinutes < 10 ? '0' + displayMinutes : displayMinutes;
+
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            const dayName = days[now.getDay()]; 
+            const monthName = months[now.getMonth()]; 
+            const dayOfMonth = now.getDate(); 
+
+            if (currentTimeEl) currentTimeEl.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
+            if (mainTimeEl) mainTimeEl.textContent = `${formattedHours}:${formattedMinutes}`;
+            if (mainDateEl) mainDateEl.textContent = `${dayName}, ${monthName} ${dayOfMonth}`;
+        }
+
+        // --- Live Activity Progress Simulation ---
+        const steps = [
+            { name: "Parsing housing options", duration: 1500 },
+            { name: "Fetching market data", duration: 2000 },
+            { name: "Analyzing property features", duration: 2500 },
+            { name: "Comparing financial aspects", duration: 2000 },
+            { name: "Generating report summary", duration: 1500 }
+        ];
+        let currentStepIndex = 0;
+        let reportReady = false;
+
+        function renderSteps() {
+            if (!progressStepsContainer) return;
+            progressStepsContainer.innerHTML = ''; 
+            steps.forEach((step, index) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.classList.add('progress-step');
+                if (index < currentStepIndex) {
+                    stepDiv.classList.add('completed');
+                } else if (index === currentStepIndex && !reportReady) {
+                    stepDiv.classList.add('active');
+                }
+
+                const iconDiv = document.createElement('div');
+                iconDiv.classList.add('progress-step-icon');
+                if (index < currentStepIndex || (reportReady && index === steps.length -1) ) {
+                    iconDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`;
+                }
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = step.name;
+
+                stepDiv.appendChild(iconDiv);
+                stepDiv.appendChild(nameSpan);
+                progressStepsContainer.appendChild(stepDiv);
+            });
+        }
+
+        function updateProgress() {
+            if (currentStepIndex >= steps.length) {
+                reportReady = true;
+                if(progressBarFill) progressBarFill.style.width = '100%';
+                if(activitySubtitle) activitySubtitle.textContent = "Housing report generation complete!";
+                if(actionButtonText) actionButtonText.textContent = 'View Report';
+                if(actionButtonIcon) {
+                    actionButtonIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>`;
+                }
+                renderSteps(); 
+                return;
+            }
+
+            const progressPercentage = (currentStepIndex / steps.length) * 100;
+            if(progressBarFill) progressBarFill.style.width = `${progressPercentage}%`;
+            renderSteps();
+
+            const currentStep = steps[currentStepIndex];
+            if(activitySubtitle) activitySubtitle.textContent = `Working on: ${currentStep.name}...`;
+
+            setTimeout(() => {
+                currentStepIndex++;
+                updateProgress();
+            }, currentStep.duration);
+        }
+
+        // --- Mock Report Data ---
+        const reportData = {
+            title: "Housing Comparison Report for Rizia",
+            generatedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            introduction: "This report summarizes and compares the key aspects of the housing options you're considering. The analysis focuses on price, size, features, and overall suitability based on common criteria.",
+            options: [
+                {
+                    id: 1, address: "123 Willow Creek, Sunnyvale, CA", price: "$1,250,000", beds: 3, baths: 2, size: "1,500 sqft",
+                    imageUrl: "https://placehold.co/300x170/7CA1B4/FFFFFF?text=Modern+Townhouse",
+                    keyFeatures: ["Modern Kitchen", "Hardwood Floors", "Small Backyard", "Community Pool"],
+                    pros: ["Good school district", "Recently renovated", "Quiet neighborhood"],
+                    cons: ["Limited parking", "HOA fees"],
+                    suitabilityScore: 85
+                },
+                {
+                    id: 2, address: "456 Oakwood Dr, Mountain View, CA", price: "$1,450,000", beds: 4, baths: 2.5, size: "1,800 sqft",
+                    imageUrl: "https://placehold.co/300x170/A78BFA/FFFFFF?text=Spacious+Suburban",
+                    keyFeatures: ["Large Garage", "Updated Bathrooms", "Spacious Living Room", "Solar Panels"],
+                    pros: ["Larger lot size", "Energy efficient", "Close to tech campuses"],
+                    cons: ["Older construction", "Needs some cosmetic updates"],
+                    suitabilityScore: 78
+                },
+                {
+                    id: 3, address: "789 Pine St, Palo Alto, CA", price: "$1,990,000", beds: 3, baths: 3, size: "1,650 sqft",
+                    imageUrl: "https://placehold.co/300x170/FBBF24/FFFFFF?text=Luxury+Condo",
+                    keyFeatures: ["Rooftop Terrace", "Smart Home Features", "Luxury Finishes", "Gym Access"],
+                    pros: ["Prime location", "High-end amenities", "Excellent views"],
+                    cons: ["Very expensive", "Smaller living space for price"],
+                    suitabilityScore: 90
+                }
+            ],
+            conclusion: "Option 3 (789 Pine St) offers the highest suitability due to its prime location and luxury amenities, despite the higher price. Option 1 (123 Willow Creek) presents a strong balance of features and value. Your final decision should weigh these factors against your personal priorities and budget."
+        };
+
+        // --- Report View Functions ---
+        function displayReport() {
+            if (!reportDataContainer || !lockscreenContent || !reportViewContent) return;
+            reportDataContainer.innerHTML = `
+                <p class="text-xs text-gray-400 mb-4">Generated: ${reportData.generatedDate}</p>
+                <p class="report-section-title">Introduction</p>
+                <p class="mb-6 text-gray-300">${reportData.introduction}</p>
+                
+                <p class="report-section-title">Comparison Details</p>
+                ${reportData.options.map(opt => `
+                    <div class="report-card">
+                        <img src="${opt.imageUrl}" alt="${opt.address}" onerror="this.src='https://placehold.co/300x170/4B5563/9CA3AF?text=Image+Not+Available'; this.onerror=null;">
+                        <h3>${opt.address}</h3>
+                        <p class="price">${opt.price}</p>
+                        <p class="details">${opt.beds} Beds | ${opt.baths} Baths | ${opt.size}</p>
+                        <p class="details font-medium mt-2 mb-1 text-gray-300">Key Features:</p>
+                        <ul class="features-list">
+                            ${opt.keyFeatures.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                        <div class="pros-cons mt-3">
+                            <p><strong>Pros:</strong> ${opt.pros.join(', ')}</p>
+                            <p class="mt-1 cons"><strong>Cons:</strong> ${opt.cons.join(', ')}</p>
+                        </div>
+                        <div class="mt-3">
+                             <span class="suitability-score">Suitability: ${opt.suitabilityScore}%</span>
+                        </div>
+                    </div>
+                `).join('')}
+
+                <p class="report-section-title mt-6">Conclusion</p>
+                <div class="report-conclusion">
+                    <p>${reportData.conclusion}</p>
+                </div>
+            `;
+            lockscreenContent.style.display = 'none';
+            reportViewContent.style.display = 'flex'; // Use 'flex' as defined in its CSS
+            reportViewContent.scrollTop = 0; 
+        }
+
+        function closeReport() {
+            if (!lockscreenContent || !reportViewContent) return;
+            reportViewContent.style.display = 'none';
+            lockscreenContent.style.display = 'block'; // Or 'flex' if it's a flex container itself
+        }
+
+        // --- Event Listeners ---
+        if(actionButton) {
+            actionButton.addEventListener('click', () => {
+                if (reportReady) {
+                    displayReport();
+                } else {
+                    console.log("Report not ready yet.");
+                }
+            });
+        }
+
+        if(closeReportButton) {
+            closeReportButton.addEventListener('click', closeReport);
+        }
+
+        // --- Initializations ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTime(); 
+            updateProgress(); 
+            // Ensure reportViewContent is hidden initially by JS as well, as a fallback
+            if (reportViewContent) {
+                 reportViewContent.style.display = 'none';
+            }
+            if (lockscreenContent) {
+                lockscreenContent.style.display = 'block'; // Ensure lockscreen is visible
+            }
+        });
+    </script>
+
+</body>
+</html>

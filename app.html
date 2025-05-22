@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dia Personal Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme Colors */
+            --bg-page-light: #f3f4f6;
+            --bg-app-light: #ffffff;
+            --text-primary-light: #111827;
+            --text-secondary-light: #374151;
+            --text-tertiary-light: #4b5563;
+            --text-muted-light: #9ca3af;
+            --border-light: #e5e7eb;
+            --border-soft-light: #f3f4f6;
+            --accent-color-light: #1e40af;
+            --accent-hover-light: #1d4ed8;
+            --highlight-bg-light: #f9fafb;
+            --highlight-bg-hover-light: #f0f2f5; 
+            --star-color-light: #f59e0b;
+            --node-bg-light: #cbd5e1;
+            --node-highlight-border-light: #ffffff;
+            --completed-text-light: #6b7280;
+            --completed-icon-light: #10b981;
+            --search-bg-light: #e5e7eb;
+            --search-placeholder-light: #9ca3af;
+            --search-icon-light: #6b7280;
+            --search-send-button-light: #9ca3af; 
+            --search-send-button-active-light: var(--accent-color-light); 
+            --overlay-backdrop-light: rgba(0, 0, 0, 0.4);
+            --overlay-content-bg-light: #ffffff;
+            --overlay-text-light: #111827;
+            --overlay-header-border-light: #e5e7eb;
+            --button-primary-bg-light: var(--accent-color-light);
+            --button-primary-text-light: #ffffff;
+            --button-primary-hover-bg-light: var(--accent-hover-light);
+            --button-secondary-bg-light: #e5e7eb;
+            --button-secondary-text-light: var(--text-secondary-light);
+            --button-secondary-hover-bg-light: #d1d5db;
+            --spinner-color-light: var(--accent-color-light);
+            --modal-meta-text-light: #6b7280;
+            --housing-card-bg-light: #f9fafb;
+            --housing-card-border-light: #e5e7eb;
+            --housing-best-fit-border-light: var(--accent-color-light);
+            --housing-best-fit-bg-light: #e0e7ff; 
+            --flight-card-bg-light: #f9fafb;
+            --flight-card-border-light: #e5e7eb;
+            --attachment-bg-light: #f3f4f6;
+            --attachment-border-light: #d1d5db;
+            --attachment-icon-gdoc-light: #4285F4;
+            --attachment-icon-gsheet-light: #0F9D58;
+            --attachment-icon-img-light: #EA4335;
+            --map-placeholder-bg-light: #e0e0e0;
+
+            /* Dark Theme Colors */
+            --bg-page-dark: #0f172a;
+            --bg-app-dark: #1e293b;
+            --text-primary-dark: #f1f5f9;
+            --text-secondary-dark: #e2e8f0;
+            --text-tertiary-dark: #94a3b8;
+            --text-muted-dark: #64748b;
+            --border-dark: #475569;
+            --border-soft-dark: #334155;
+            --accent-color-dark: #38bdf8;
+            --accent-hover-dark: #0ea5e9;
+            --highlight-bg-dark: #334155;
+            --highlight-bg-hover-dark: #3e4c60; 
+            --star-color-dark: #facc15;
+            --node-bg-dark: #475569;
+            --node-highlight-border-dark: #1e293b;
+            --completed-text-dark: #94a3b8;
+            --completed-icon-dark: #34d399;
+            --search-bg-dark: #334155;
+            --search-placeholder-dark: #64748b;
+            --search-icon-dark: #94a3b8;
+            --search-send-button-dark: #64748b; 
+            --search-send-button-active-dark: var(--accent-color-dark); 
+            --overlay-backdrop-dark: rgba(0, 0, 0, 0.6); 
+            --overlay-content-bg-dark: #1e293b; 
+            --overlay-text-dark: #f1f5f9;
+            --overlay-header-border-dark: #334155;
+            --button-primary-bg-dark: var(--accent-color-dark);
+            --button-primary-text-dark: var(--text-primary-light);
+            --button-primary-hover-bg-dark: var(--accent-hover-dark);
+            --button-secondary-bg-dark: #334155;
+            --button-secondary-text-dark: var(--text-secondary-dark);
+            --button-secondary-hover-bg-dark: #475569;
+            --spinner-color-dark: var(--accent-color-dark);
+            --modal-meta-text-dark: #94a3b8;
+            --housing-card-bg-dark: #2c3e50; 
+            --housing-card-border-dark: #475569;
+            --housing-best-fit-border-dark: var(--accent-color-dark);
+            --housing-best-fit-bg-dark: #2563eb; 
+            --flight-card-bg-dark: #2c3e50;
+            --flight-card-border-dark: #475569;
+            --attachment-bg-dark: #2c3e50;
+            --attachment-border-dark: #475569;
+            --attachment-icon-gdoc-dark: #669df6;
+            --attachment-icon-gsheet-dark: #34a853;
+            --attachment-icon-img-dark: #f07369;
+            --map-placeholder-bg-dark: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page-light);
+            color: var(--text-primary-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background-color: var(--bg-page-dark);
+            color: var(--text-primary-dark);
+        }
+
+        .app-container {
+            max-width: 400px;
+            min-height: 700px;
+            margin: 10vh auto; /* Updated margin */
+            background-color: var(--bg-app-light);
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+            position: relative; 
+            transition: background-color 0.3s;
+        }
+        body.dark .app-container {
+            background-color: var(--bg-app-dark);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+        }
+        .header-title { font-size: 2.75rem; font-weight: 700; color: var(--text-primary-light); }
+        body.dark .header-title { color: var(--text-primary-dark); }
+        .header-right-controls { display: flex; align-items: center; gap: 16px; }
+        #current-time { font-size: 0.9rem; font-weight: 500; color: var(--text-tertiary-light); }
+        body.dark #current-time { color: var(--text-tertiary-dark); }
+        #theme-toggle-button { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; color: var(--text-tertiary-light); }
+        #theme-toggle-button:hover { background-color: var(--border-soft-light); }
+        body.dark #theme-toggle-button { color: var(--text-tertiary-dark); }
+        body.dark #theme-toggle-button:hover { background-color: var(--border-dark); }
+        #theme-toggle-button svg { width: 24px; height: 24px; }
+
+        .content-section { padding: 0 24px 24px 24px; flex-grow: 1; overflow-y: auto; }
+        .section-title { font-size: 1.125rem; font-weight: 600; color: var(--text-secondary-light); margin-bottom: 16px; margin-top: 24px; }
+        body.dark .section-title { color: var(--text-secondary-dark); }
+        .section-title:first-child { margin-top: 4px; }
+
+        /* Day's Overview Styling */
+        .days-overview-list .list-item { display: flex; padding: 10px 0; border-bottom: 1px solid var(--border-soft-light); transition: background-color 0.2s; }
+        .days-overview-list .list-item.clickable-meeting:hover { background-color: var(--highlight-bg-hover-light); }
+        body.dark .days-overview-list .list-item.clickable-meeting:hover { background-color: var(--highlight-bg-hover-dark); }
+        .days-overview-list .list-item.clickable-meeting { cursor: pointer; }
+        body.dark .days-overview-list .list-item { border-bottom: 1px solid var(--border-soft-dark); }
+        .days-overview-list .list-item:last-child { border-bottom: none; }
+        .days-overview-list .list-item-time { font-weight: 500; color: var(--text-tertiary-light); width: 65px; flex-shrink: 0; text-align: right; padding-right: 10px; margin-top: 2px; }
+        body.dark .days-overview-list .list-item-time { color: var(--text-tertiary-dark); }
+        .timeline-connector { display: flex; flex-direction: column; align-items: center; width: 20px; flex-shrink: 0; position: relative; }
+        .timeline-line { width: 2px; background-color: var(--border-light); flex-grow: 1; }
+        body.dark .timeline-line { background-color: var(--border-dark); }
+        .timeline-node { width: 10px; height: 10px; background-color: var(--node-bg-light); border-radius: 50%; margin: 6px 0; z-index: 1; transition: all 0.3s ease; }
+        body.dark .timeline-node { background-color: var(--node-bg-dark); }
+        .days-overview-list .list-item:first-child .timeline-line-top { visibility: hidden; }
+        .days-overview-list .list-item:last-child .timeline-line-bottom { visibility: hidden; }
+        .days-overview-list .list-item-details-wrapper { flex-grow: 1; padding-left: 10px; display: flex; flex-direction: column; justify-content: center; min-height: 36px; }
+        .days-overview-list .list-item-text { color: var(--text-tertiary-light); font-size: 0.95rem; }
+        body.dark .days-overview-list .list-item-text { color: var(--text-tertiary-dark); }
+        .days-overview-list .list-item-subtext { font-size: 0.8rem; color: var(--text-muted-light); margin-top: 2px; display: flex; align-items: center; }
+        body.dark .days-overview-list .list-item-subtext { color: var(--text-muted-dark); }
+        .days-overview-list .list-item-icon-star-event { margin-right: 6px; color: var(--star-color-light); font-size: 0.9em; }
+        body.dark .days-overview-list .list-item-icon-star-event { color: var(--star-color-dark); }
+        .days-overview-list .list-item.next-item .list-item-time, .days-overview-list .list-item.next-item .list-item-text { color: var(--accent-color-light); font-weight: 600; }
+        .days-overview-list .list-item.next-item .list-item-subtext { color: var(--accent-color-light); font-weight: 500; }
+        body.dark .days-overview-list .list-item.next-item .list-item-time, body.dark .days-overview-list .list-item.next-item .list-item-text { color: var(--accent-color-dark); }
+        body.dark .days-overview-list .list-item.next-item .list-item-subtext { color: var(--accent-color-dark); }
+        .days-overview-list .list-item.next-item .timeline-node { background-color: var(--accent-color-light); width: 14px; height: 14px; border: 2px solid var(--node-highlight-border-light); box-shadow: 0 0 0 2px var(--accent-color-light); }
+        body.dark .days-overview-list .list-item.next-item .timeline-node { background-color: var(--accent-color-dark); border-color: var(--node-highlight-border-dark); box-shadow: 0 0 0 2px var(--accent-color-dark); }
+        .days-overview-list .list-item.next-item .timeline-line { background-color: var(--accent-color-light); }
+        body.dark .days-overview-list .list-item.next-item .timeline-line { background-color: var(--accent-color-dark); }
+        .days-overview-list .list-item:not(.next-item) .list-item-time, .days-overview-list .list-item:not(.next-item) .list-item-text { color: var(--text-muted-light); }
+        body.dark .days-overview-list .list-item:not(.next-item) .list-item-time, body.dark .days-overview-list .list-item:not(.next-item) .list-item-text { color: var(--text-muted-dark); }
+        .days-overview-list .list-item:not(.next-item) .list-item-subtext { color: var(--text-muted-light); opacity: 0.8; }
+        body.dark .days-overview-list .list-item:not(.next-item) .list-item-subtext { color: var(--text-muted-dark); opacity: 0.8; }
+        .days-overview-list .list-item:not(.next-item) .list-item-icon-star-event { color: var(--text-muted-light); opacity: 0.7; }
+        body.dark .days-overview-list .list-item:not(.next-item) .list-item-icon-star-event { color: var(--text-muted-dark); opacity: 0.7; }
+
+        /* Task Lists Styling */
+        .list-item-base { background-color: var(--highlight-bg-light); border-radius: 12px; margin-bottom: 10px; overflow: hidden; transition: background-color 0.2s; }
+        body.dark .list-item-base { background-color: var(--highlight-bg-dark); }
+        .list-item-actionable, .list-item-completed.clickable { cursor: pointer; }
+        .list-item-actionable:hover, .list-item-completed.clickable:hover { background-color: var(--highlight-bg-hover-light); }
+        body.dark .list-item-actionable:hover, body.dark .list-item-completed.clickable:hover { background-color: var(--highlight-bg-hover-dark); }
+        .list-item-header-base { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
+        .list-item-icon { margin-right: 10px; }
+        .list-item-icon-star { color: var(--star-color-light); }
+        body.dark .list-item-icon-star { color: var(--star-color-dark); }
+        .list-item-icon-check svg { width: 20px; height: 20px; color: var(--completed-icon-light); }
+        body.dark .list-item-icon-check svg { color: var(--completed-icon-dark); }
+        .list-item-title-base { font-weight: 500; color: var(--text-primary-light); flex-grow: 1; }
+        body.dark .list-item-title-base { color: var(--text-primary-dark); }
+        .list-item-completed .list-item-title-base { color: var(--completed-text-light); }
+        body.dark .list-item-completed .list-item-title-base { color: var(--completed-text-dark); }
+        .list-item-subtext-list { font-size: 0.8rem; color: var(--text-muted-light); padding: 0px 16px 10px 46px; margin-top: -6px; }
+        body.dark .list-item-subtext-list { color: var(--text-muted-dark); }
+        .task-details-content { display: none; }
+
+        /* Footer Search Bar Styling */
+        .footer-actions { padding: 12px 16px; border-top: 1px solid var(--border-light); background-color: var(--bg-app-light); transition: background-color 0.3s, border-top-color 0.3s; flex-shrink: 0; }
+        body.dark .footer-actions { border-top: 1px solid var(--border-dark); background-color: var(--bg-app-dark); }
+        .search-bar-wrapper { display: flex; align-items: center; background-color: var(--search-bg-light); border-radius: 24px; padding: 6px 8px; }
+        body.dark .search-bar-wrapper { background-color: var(--search-bg-dark); }
+        .search-input { flex-grow: 1; border: none; background-color: transparent; padding: 8px 12px; font-size: 1rem; color: var(--text-primary-light); outline: none; }
+        body.dark .search-input { color: var(--text-primary-dark); }
+        .search-input::placeholder { color: var(--search-placeholder-light); }
+        body.dark .search-input::placeholder { color: var(--search-placeholder-dark); }
+        .footer-icon-button { background-color: transparent; border: none; padding: 8px; margin-left: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.2s, opacity 0.2s; }
+        .footer-icon-button svg { width: 22px; height: 22px; }
+        .footer-icon-button:hover { opacity: 0.7; }
+        .talk-button { color: var(--search-icon-light); }
+        body.dark .talk-button { color: var(--search-icon-dark); }
+        .send-button { color: var(--search-send-button-light); }
+        body.dark .send-button { color: var(--search-send-button-dark); }
+        .send-button.active { color: var(--search-send-button-active-light); }
+        body.dark .send-button.active { color: var(--search-send-button-active-dark); }
+
+        .icon-star::before { content: '★'; font-size: 1.1rem; }
+
+        /* App Modal Overlay Styling */
+        .app-modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--overlay-backdrop-light);
+            display: none; align-items: flex-end; justify-content: center;
+            z-index: 50; opacity: 0; transition: opacity 0.3s ease-in-out;
+        }
+        body.dark .app-modal-overlay { background-color: var(--overlay-backdrop-dark); }
+        .app-modal-overlay.visible { display: flex; opacity: 1; }
+        .overlay-content-app {
+            background-color: var(--overlay-content-bg-light);
+            width: 100%; max-height: 95vh; 
+            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+            transform: translateY(100%); transition: transform 0.3s ease-out;
+        }
+        .app-modal-overlay.visible .overlay-content-app { transform: translateY(0); }
+        body.dark .overlay-content-app { background-color: var(--overlay-content-bg-dark); box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
+        .overlay-header-app {
+            display: flex; align-items: center; padding: 16px 20px;
+            border-bottom: 1px solid var(--overlay-header-border-light); flex-shrink: 0;
+        }
+        body.dark .overlay-header-app { border-bottom: 1px solid var(--overlay-header-border-dark); }
+        .overlay-back-button { background: none; border: none; cursor: pointer; color: var(--text-tertiary-light); padding: 4px; margin-right: 12px; }
+        body.dark .overlay-back-button { color: var(--text-tertiary-dark); }
+        .overlay-back-button svg { width: 24px; height: 24px; }
+        .overlay-back-button:hover { opacity: 0.7; }
+        .overlay-title-app { font-size: 1.1rem; font-weight: 600; color: var(--overlay-text-light); flex-grow: 1; text-align: center; }
+        body.dark .overlay-title-app { color: var(--overlay-text-dark); }
+        .overlay-body-app { padding: 20px; overflow-y: auto; flex-grow: 1; }
+        
+        .modal-meta-info { margin-bottom: 12px; font-size: 0.85rem; color: var(--modal-meta-text-light); }
+        body.dark .modal-meta-info { color: var(--modal-meta-text-dark); }
+        .modal-meta-info div { margin-bottom: 4px; }
+        .modal-meta-info strong { font-weight: 500; color: var(--text-secondary-light); }
+        body.dark .modal-meta-info strong { color: var(--text-secondary-dark); }
+        
+        .modal-meeting-details { margin-bottom: 16px; }
+        .modal-meeting-details h5 { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary-light); margin-bottom: 4px; margin-top: 8px; }
+        body.dark .modal-meeting-details h5 { color: var(--text-secondary-dark); }
+        .modal-meeting-details p, .modal-meeting-details ul { font-size: 0.9rem; color: var(--text-tertiary-light); margin-bottom: 4px; }
+        body.dark .modal-meeting-details p, body.dark .modal-meeting-details ul { color: var(--text-tertiary-dark); }
+        .modal-meeting-details ul { list-style: disc; padding-left: 20px; }
+
+        .overlay-details-text-app { font-size: 0.95rem; line-height: 1.6; color: var(--overlay-text-light); margin-bottom: 20px; }
+        body.dark .overlay-details-text-app { color: var(--overlay-text-dark); }
+        
+        /* Housing Comparison Styles */
+        .housing-comparison-container { display: flex; flex-direction: column; gap: 16px; }
+        .housing-card { background-color: var(--housing-card-bg-light); border: 1px solid var(--housing-card-border-light); border-radius: 12px; padding: 16px; }
+        body.dark .housing-card { background-color: var(--housing-card-bg-dark); border: 1px solid var(--housing-card-border-dark); }
+        .housing-card.best-fit { border-width: 2px; border-color: var(--housing-best-fit-border-light); background-color: var(--housing-best-fit-bg-light); position: relative; }
+        body.dark .housing-card.best-fit { border-color: var(--housing-best-fit-border-dark); background-color: var(--housing-best-fit-bg-dark); }
+        .best-fit-badge { position: absolute; top: -10px; right: 12px; background-color: var(--housing-best-fit-border-light); color: white; font-size: 0.7rem; font-weight: 600; padding: 3px 8px; border-radius: 8px; }
+        body.dark .best-fit-badge { background-color: var(--housing-best-fit-border-dark); color: var(--text-primary-light); }
+        .housing-card h5 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--overlay-text-light); }
+        body.dark .housing-card h5 { color: var(--overlay-text-dark); }
+        .housing-card p { font-size: 0.85rem; margin-bottom: 4px; color: var(--text-tertiary-light); }
+        body.dark .housing-card p { color: var(--text-tertiary-dark); }
+        .housing-card ul { list-style: disc; padding-left: 20px; margin-top: 8px; font-size: 0.85rem; color: var(--text-tertiary-light); }
+        body.dark .housing-card ul { color: var(--text-tertiary-dark); }
+        .housing-card li { margin-bottom: 3px; }
+
+        /* Flight Options Styling */
+        .flight-options-container { margin-top: 16px; }
+        .flight-options-title { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary-light); margin-bottom: 12px; }
+        body.dark .flight-options-title { color: var(--text-secondary-dark); }
+        .flight-card {
+            background-color: var(--flight-card-bg-light);
+            border: 1px solid var(--flight-card-border-light);
+            border-radius: 12px; padding: 16px; margin-bottom: 12px;
+        }
+        body.dark .flight-card {
+            background-color: var(--flight-card-bg-dark);
+            border: 1px solid var(--flight-card-border-dark);
+        }
+        .flight-card h5 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--overlay-text-light); }
+        body.dark .flight-card h5 { color: var(--overlay-text-dark); }
+        .flight-card p { font-size: 0.85rem; margin-bottom: 4px; color: var(--text-tertiary-light); }
+        body.dark .flight-card p { color: var(--text-tertiary-dark); }
+        .flight-card .select-flight-button {
+            margin-top: 12px; width: 100%; padding: 8px 12px; font-size: 0.85rem;
+            font-weight: 500; border-radius: 8px; cursor: pointer;
+            background-color: var(--button-secondary-bg-light);
+            color: var(--button-secondary-text-light);
+            border: 1px solid var(--border-light);
+            transition: background-color 0.2s;
+        }
+        body.dark .flight-card .select-flight-button {
+            background-color: var(--button-secondary-bg-dark);
+            color: var(--button-secondary-text-dark);
+            border: 1px solid var(--border-dark);
+        }
+        .flight-card .select-flight-button:hover {
+            background-color: var(--button-secondary-hover-bg-light);
+        }
+        body.dark .flight-card .select-flight-button:hover {
+            background-color: var(--button-secondary-hover-bg-dark);
+        }
+        
+        /* Meeting Attachments Styling */
+        .meeting-attachments-container { margin-top: 16px; margin-bottom: 16px; }
+        .meeting-attachments-title { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary-light); margin-bottom: 8px; }
+        body.dark .meeting-attachments-title { color: var(--text-secondary-dark); }
+        .attachment-item {
+            display: flex; align-items: center;
+            background-color: var(--attachment-bg-light);
+            border: 1px solid var(--attachment-border-light);
+            border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+            font-size: 0.9rem; color: var(--text-tertiary-light);
+        }
+        body.dark .attachment-item {
+            background-color: var(--attachment-bg-dark);
+            border: 1px solid var(--attachment-border-dark);
+            color: var(--text-tertiary-dark);
+        }
+        .attachment-icon { margin-right: 10px; width: 20px; height: 20px; }
+        .attachment-icon.gdoc { color: var(--attachment-icon-gdoc-light); }
+        body.dark .attachment-icon.gdoc { color: var(--attachment-icon-gdoc-dark); }
+        .attachment-icon.gsheet { color: var(--attachment-icon-gsheet-light); }
+        body.dark .attachment-icon.gsheet { color: var(--attachment-icon-gsheet-dark); }
+        .attachment-icon.img { color: var(--attachment-icon-img-light); } /* For X-Ray */
+        body.dark .attachment-icon.img { color: var(--attachment-icon-img-dark); }
+
+
+        .sub-steps-container, .meeting-briefing-container, .map-navigation-container { margin-top: 16px; }
+        .sub-steps-title, .meeting-briefing-title, .map-navigation-title { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary-light); margin-bottom: 8px; }
+        body.dark .sub-steps-title, body.dark .meeting-briefing-title, body.dark .map-navigation-title { color: var(--text-secondary-dark); }
+        .sub-steps-list, .meeting-briefing-content, .navigation-steps-list { list-style-type: disc; padding-left: 20px; font-size: 0.9rem; color: var(--text-tertiary-light); }
+        body.dark .sub-steps-list, body.dark .meeting-briefing-content, body.dark .navigation-steps-list { color: var(--text-tertiary-dark); }
+        .sub-steps-list li, .meeting-briefing-content p, .meeting-briefing-content ul li, .navigation-steps-list li { margin-bottom: 6px; }
+        .meeting-briefing-content h6 { font-weight: 600; margin-top: 10px; }
+        .map-placeholder {
+            width: 100%; height: 150px; background-color: var(--map-placeholder-bg-light);
+            border-radius: 8px; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted-light); font-size: 0.9rem;
+        }
+        body.dark .map-placeholder { background-color: var(--map-placeholder-bg-dark); color: var(--text-muted-dark); }
+
+
+        .overlay-footer-app { padding: 16px 20px; border-top: 1px solid var(--overlay-header-border-light); flex-shrink: 0; }
+        body.dark .overlay-footer-app { border-top: 1px solid var(--overlay-header-border-dark); }
+        .gemini-button, .action-button { /* Common styling for footer buttons */
+            width: 100%; padding: 10px 16px; font-weight: 500; border-radius: 12px;
+            cursor: pointer; transition: background-color 0.2s;
+            background-color: var(--button-primary-bg-light); color: var(--button-primary-text-light);
+            border: none; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        body.dark .gemini-button, body.dark .action-button { background-color: var(--button-primary-bg-dark); color: var(--button-primary-text-dark); }
+        .gemini-button:hover, .action-button:hover { background-color: var(--button-primary-hover-bg-light); }
+        body.dark .gemini-button:hover, body.dark .action-button:hover { background-color: var(--button-primary-hover-bg-dark); }
+        .gemini-button.loading { cursor: not-allowed; opacity: 0.7; }
+        .spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.75s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1 class="header-title">Dia</h1>
+            <div class="header-right-controls">
+                <span id="current-time"></span>
+                <button id="theme-toggle-button" aria-label="Toggle theme">
+                    <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                    <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.876 2.425 2.084 2.633A2.251 2.251 0 0 0 14.25 14.25c0-1.31-.876-2.425-2.084-2.633A2.251 2.251 0 0 0 12 12Z" /></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="content-section">
+            <section class="days-overview">
+                <h2 class="section-title">Day's Overview</h2>
+                <ul class="days-overview-list">
+                    <li class="list-item clickable-meeting" 
+                        data-modal-type="meeting"
+                        data-meeting-title="Product Sync" 
+                        data-meeting-time="11:00 PM"
+                        data-meeting-attendees='["Alice", "Bob", "Charlie", "David"]'
+                        data-meeting-agenda='["Review Q2 Roadmap", "Discuss new feature proposals", "Plan next sprint"]'
+                        data-meeting-attachments='[
+                            {"name": "Q2 Roadmap 2025", "type": "gdoc", "icon": "<svg class=\"attachment-icon gdoc\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z\"></path></svg>"},
+                            {"name": "Feature Proposals Q3", "type": "gsheet", "icon": "<svg class=\"attachment-icon gsheet\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z\"></path><path fill=\"none\" d=\"M0 0h24v24H0z\"></path><path d=\"M15 10H9v2h6v-2zm0 3H9v2h6v-2zm-4 3h2v-2h-2v2z\"></path></svg>"}
+                        ]'>
+                        <span class="list-item-time">11:00 PM</span>
+                        <div class="timeline-connector">
+                            <div class="timeline-line timeline-line-top"></div>
+                            <div class="timeline-node"></div>
+                            <div class="timeline-line timeline-line-bottom"></div>
+                        </div>
+                        <div class="list-item-details-wrapper">
+                            <span class="list-item-text">Product Sync</span>
+                        </div>
+                    </li>
+                    <li class="list-item next-item clickable-meeting"
+                        data-modal-type="meeting"
+                        data-meeting-title="Lunch with Katy" 
+                        data-meeting-time="02:00 PM"
+                        data-meeting-attendees='["Katy H."]'
+                        data-meeting-agenda='["Catch up", "Discuss potential collaboration"]'
+                        data-meeting-location="The Bistro Cafe, 123 Main St"
+                        data-booking-source="OpenTable">
+                        <span class="list-item-time">02:00 PM</span>
+                        <div class="timeline-connector">
+                            <div class="timeline-line timeline-line-top"></div>
+                            <div class="timeline-node"></div>
+                            <div class="timeline-line timeline-line-bottom"></div>
+                        </div>
+                        <div class="list-item-details-wrapper">
+                            <span class="list-item-text">Lunch with Katy</span>
+                        </div>
+                    </li>
+                    <li class="list-item clickable-meeting"
+                        data-modal-type="meeting"
+                        data-meeting-title="Dentist Appointment" 
+                        data-meeting-time="05:00 PM"
+                        data-meeting-attendees='["Dr. Smith (Dentist)"]'
+                        data-meeting-agenda='["Regular check-up and cleaning"]'
+                        data-previous-visit-summary="Routine check-up, one minor cavity filled on upper left molar. Recommended to continue regular flossing."
+                        data-meeting-attachments='[
+                            {"name": "Previous X-Ray (Image)", "type": "img", "icon": "<svg class=\"attachment-icon img\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z\"></path></svg>"},
+                            {"name": "Visit Notes - Nov 2024", "type": "gdoc", "icon": "<svg class=\"attachment-icon gdoc\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z\"></path></svg>"}
+                        ]'>
+                        <span class="list-item-time">05:00 PM</span>
+                        <div class="timeline-connector">
+                            <div class="timeline-line timeline-line-top"></div>
+                            <div class="timeline-node"></div>
+                            <div class="timeline-line timeline-line-bottom"></div>
+                        </div>
+                        <div class="list-item-details-wrapper">
+                            <span class="list-item-text">Dentist Appointment</span>
+                            <span class="list-item-subtext">
+                                <span class="list-item-icon-star-event icon-star"></span>
+                                Suggested by Dia &bull; 17 min drive
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="tasks-completed">
+                <h2 class="section-title">Tasks Completed</h2>
+                <ul class="tasks-completed-list">
+                    <li class="list-item-completed list-item-base clickable" 
+                        data-modal-type="task"
+                        data-task-title="Review housing comparison" 
+                        data-source-type="iMessage" 
+                        data-received-info="Today, 10:15 AM"
+                        data-details-text='[
+                            {"id":1, "address":"123 Main St, Anytown", "price":"$450,000", "sqft":"1,800 sqft", "beds":3, "baths":2, "features":["Modern Kitchen", "Large Backyard", "Quiet Street"], "betterFit":false, "realtorLink":"#"},
+                            {"id":2, "address":"456 Oak Ave, Anytown", "price":"$420,000", "sqft":"1,650 sqft", "beds":3, "baths":2.5, "features":["Renovated Bathrooms", "Walk to Park", "Good Schools"], "betterFit":true, "realtorLink":"#"},
+                            {"id":3, "address":"789 Pine Ln, Anytown", "price":"$480,000", "sqft":"2,000 sqft", "beds":4, "baths":2, "features":["Spacious Layout", "Home Office", "Two-car Garage"], "betterFit":false, "realtorLink":"#"}
+                        ]'
+                        data-subtext-list="3 properties compared, decision pending by EOD.">
+                        <div class="list-item-header-base">
+                             <span class="list-item-icon list-item-icon-check">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                             </span>
+                            <span class="list-item-title-base">Review housing comparison</span>
+                        </div>
+                        <div class="list-item-subtext-list">3 properties compared, decision pending by EOD.</div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="requires-attention">
+                <h2 class="section-title">Requires Attention</h2>
+                <ul class="requires-attention-list">
+                    <li class="list-item-actionable list-item-base" 
+                        data-modal-type="task"
+                        data-task-title="Sign insurance renewal" 
+                        data-source-type="Gmail" 
+                        data-received-info="Yesterday, 3:45 PM"
+                        data-task-details-content='{"policyId":"POL-DIA-2024-98765", "vehicle":"Toyota Camry", "plate":"ABC-123", "currentExpiry":"June 4, 2025", "coverageSummary":"Comprehensive, Collision ($500 deductible), Liability 100/300/50", "renewalPremium":"$1285.50 (Annual)", "paymentDueDate":"June 4, 2025", "insuranceCompany":"Acme Auto Insurance"}'>
+                        <div class="list-item-header-base">
+                            <span class="list-item-icon list-item-icon-star icon-star"></span>
+                            <span class="list-item-title-base">Sign insurance renewal</span>
+                        </div>
+                        <div class="list-item-subtext-list">via Gmail - Yesterday, 3:45 PM</div>
+                    </li>
+                     <li class="list-item-actionable list-item-base" 
+                        data-modal-type="task"
+                        data-task-title="Book SFO to NYC flights" 
+                        data-source-type="Wife" 
+                        data-received-info="Today, 9:05 PM">
+                        <div class="list-item-header-base">
+                            <span class="list-item-icon list-item-icon-star icon-star"></span>
+                            <span class="list-item-title-base">Book SFO to NYC flights</span>
+                        </div>
+                        <div class="list-item-subtext-list">from Wife - Today, 9:05 PM</div>
+                        <div class="task-details-content">Your wife asked you to book flight tickets from SFO to NYC for June 2nd. It's to meet her mom.</div>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <footer class="footer-actions">
+            <div class="search-bar-wrapper">
+                <input type="text" class="search-input" placeholder="Search or type a command...">
+                <button class="talk-button footer-icon-button" id="talkButton" aria-label="Talk to Dia">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 18.75a6 6 0 0 0 6-6v-1.5a6 6 0 0 0-12 0v1.5a6 6 0 0 0 6 6Z" />
+                        <path d="M12 21.75a.75.75 0 0 1-.75-.75v-2.635a6.007 6.007 0 0 1-3.921-2.054.75.75 0 0 1 .619-1.4A4.507 4.507 0 0 0 12 16.5a4.507 4.507 0 0 0 4.052-2.139.75.75 0 1 1 .62 1.401A6.007 6.007 0 0 1 12.75 18.365v2.635a.75.75 0 0 1-.75-.75Z" />
+                        <path d="M12 4.5a.75.75 0 0 1 .75.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 .75-.75Z" />
+                    </svg>
+                </button>
+                <button class="send-button footer-icon-button" id="sendButton" aria-label="Send search" style="display: none;">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+                    </svg>
+                </button>
+            </div>
+        </footer>
+
+        <div id="item-modal-overlay" class="app-modal-overlay"> <div class="overlay-content-app">
+                <div class="overlay-header-app">
+                    <button id="modal-back-btn" class="overlay-back-button" aria-label="Close modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <h3 id="modal-title-text" class="overlay-title-app">Item Title</h3>
+                    <div style="width: 36px;"></div> </div>
+                <div class="overlay-body-app">
+                    <div id="modal-meta-section" class="modal-meta-info" style="display:none;">
+                        <div id="modal-from-info" style="display:none;"><strong>From:</strong> <span id="modal-from-text"></span></div>
+                        <div id="modal-received-info" style="display:none;"><strong>Received:</strong> <span id="modal-received-text"></span></div>
+                        <div id="modal-meeting-time" style="display:none;"><strong>Time:</strong> <span id="modal-meeting-time-text"></span></div>
+                        <div id="modal-meeting-location" style="display:none;"><strong>Location:</strong> <span id="modal-meeting-location-text"></span></div>
+                        <div id="modal-booking-source" style="display:none;"><strong>Booking:</strong> <span id="modal-booking-source-text"></span></div>
+                    </div>
+                    <div id="modal-meeting-details-section" class="modal-meeting-details" style="display:none;">
+                        <h5>Attendees:</h5>
+                        <ul id="modal-meeting-attendees-list"></ul>
+                        <h5>Agenda:</h5>
+                        <ul id="modal-meeting-agenda-list"></ul>
+                        <div id="modal-meeting-attachments-section" class="meeting-attachments-container" style="display:none;">
+                            <h5 class="meeting-attachments-title">Attachments:</h5>
+                            <div id="modal-meeting-attachments-list"></div>
+                        </div>
+                        <div id="modal-previous-visit-summary-section" style="display:none;">
+                            <h5>Previous Visit Summary:</h5>
+                            <p id="modal-previous-visit-summary-text" class="overlay-details-text-app"></p>
+                        </div>
+                    </div>
+                    <div id="modal-details-content"> 
+                        <p id="modal-details-text" class="overlay-details-text-app">Details will appear here.</p>
+                    </div>
+                    <div id="map-navigation-section" class="map-navigation-container" style="display:none;">
+                        <div id="map-placeholder" class="map-placeholder">Map Area</div>
+                        <h5 class="map-navigation-title">Directions:</h5>
+                        <ul id="navigation-steps-list" class="navigation-steps-list"></ul>
+                        <div id="gemini-navigation-spinner" style="display: none; text-align: center; padding: 10px;">
+                             <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div id="flight-options-section" class="flight-options-container" style="display:none;">
+                        <h4 class="flight-options-title">✈️ Flight Options:</h4>
+                        <div id="flight-options-content"></div>
+                        <div id="gemini-flight-spinner" style="display: none; text-align: center; padding: 10px;">
+                             <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div id="meeting-briefing-section" class="meeting-briefing-container" style="display: none;">
+                        <h4 class="meeting-briefing-title">✨ Meeting Briefing:</h4>
+                        <div id="meeting-briefing-content" class="meeting-briefing-content"></div>
+                         <div id="gemini-briefing-spinner" style="display: none; text-align: center; padding: 10px;">
+                             <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div id="sub-steps-section" class="sub-steps-container" style="display: none;">
+                        <h4 class="sub-steps-title">✨ Suggested Sub-steps:</h4>
+                        <ul id="sub-steps-list-content" class="sub-steps-list"></ul>
+                        <div id="gemini-substeps-spinner" style="display: none; text-align: center; padding: 10px;">
+                             <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="modal-footer-buttons" class="overlay-footer-app">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update current time
+        const timeElement = document.getElementById('current-time');
+        function updateTime() {
+            if (timeElement) {
+                const now = new Date();
+                timeElement.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+        }
+        updateTime(); 
+        setInterval(updateTime, 1000);
+
+        // Theme toggle functionality
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const moonIcon = document.getElementById('moon-icon');
+        const sunIcon = document.getElementById('sun-icon');
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+                if(moonIcon) moonIcon.style.display = 'none';
+                if(sunIcon) sunIcon.style.display = 'block';
+            } else {
+                document.body.classList.remove('dark');
+                if(moonIcon) moonIcon.style.display = 'block';
+                if(sunIcon) sunIcon.style.display = 'none';
+            }
+        }
+        let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(currentTheme);
+        if(themeToggleButton) {
+            themeToggleButton.addEventListener('click', () => {
+                const isDarkMode = document.body.classList.toggle('dark');
+                currentTheme = isDarkMode ? 'dark' : 'light';
+                localStorage.setItem('theme', currentTheme);
+                applyTheme(currentTheme);
+            });
+        }
+        
+        // App Modal
+        const modalOverlay = document.getElementById('item-modal-overlay');
+        const modalTitleElement = document.getElementById('modal-title-text');
+        const modalDetailsContent = document.getElementById('modal-details-content');
+        const modalDetailsTextElement = document.getElementById('modal-details-text'); 
+        const modalBackButton = document.getElementById('modal-back-btn');
+        
+        const modalMetaSection = document.getElementById('modal-meta-section');
+        const modalFromInfo = document.getElementById('modal-from-info');
+        const modalFromText = document.getElementById('modal-from-text');
+        const modalReceivedInfo = document.getElementById('modal-received-info');
+        const modalReceivedText = document.getElementById('modal-received-text');
+        const modalMeetingTime = document.getElementById('modal-meeting-time');
+        const modalMeetingTimeText = document.getElementById('modal-meeting-time-text');
+        const modalMeetingLocation = document.getElementById('modal-meeting-location');
+        const modalMeetingLocationText = document.getElementById('modal-meeting-location-text');
+        const modalBookingSource = document.getElementById('modal-booking-source');
+        const modalBookingSourceText = document.getElementById('modal-booking-source-text');
+        
+        const modalMeetingDetailsSection = document.getElementById('modal-meeting-details-section');
+        const modalMeetingAttendeesList = document.getElementById('modal-meeting-attendees-list');
+        const modalMeetingAgendaList = document.getElementById('modal-meeting-agenda-list');
+        const modalMeetingAttachmentsSection = document.getElementById('modal-meeting-attachments-section');
+        const modalMeetingAttachmentsList = document.getElementById('modal-meeting-attachments-list');
+        const modalPreviousVisitSummarySection = document.getElementById('modal-previous-visit-summary-section');
+        const modalPreviousVisitSummaryText = document.getElementById('modal-previous-visit-summary-text');
+        
+        const modalFooterButtons = document.getElementById('modal-footer-buttons');
+
+        const subStepsSection = document.getElementById('sub-steps-section');
+        const subStepsListContent = document.getElementById('sub-steps-list-content');
+        const geminiSubstepsSpinner = document.getElementById('gemini-substeps-spinner');
+
+        const meetingBriefingSection = document.getElementById('meeting-briefing-section');
+        const meetingBriefingContent = document.getElementById('meeting-briefing-content');
+        const geminiBriefingSpinner = document.getElementById('gemini-briefing-spinner');
+
+        const flightOptionsSection = document.getElementById('flight-options-section');
+        const flightOptionsContent = document.getElementById('flight-options-content');
+        const geminiFlightSpinner = document.getElementById('gemini-flight-spinner');
+
+        const mapNavigationSection = document.getElementById('map-navigation-section');
+        const mapPlaceholder = document.getElementById('map-placeholder');
+        const navigationStepsList = document.getElementById('navigation-steps-list');
+        const geminiNavigationSpinner = document.getElementById('gemini-navigation-spinner');
+
+
+        let currentModalData = {}; 
+
+        function populateModal(itemElement) {
+            const modalType = itemElement.dataset.modalType;
+            currentModalData = { ...itemElement.dataset }; 
+            
+            modalTitleElement.textContent = currentModalData.taskTitle || currentModalData.meetingTitle;
+            
+            modalDetailsContent.innerHTML = ''; 
+            let pTagForDetails = modalDetailsContent.querySelector('#modal-details-text');
+            if (!pTagForDetails) {
+                pTagForDetails = document.createElement('p');
+                pTagForDetails.id = 'modal-details-text';
+                pTagForDetails.className = 'overlay-details-text-app';
+                modalDetailsContent.appendChild(pTagForDetails);
+            }
+            pTagForDetails.textContent = ''; 
+            pTagForDetails.style.display = 'block'; 
+
+
+            modalMeetingAttendeesList.innerHTML = '';
+            modalMeetingAgendaList.innerHTML = '';
+            modalMeetingAttachmentsList.innerHTML = '';
+            subStepsListContent.innerHTML = '';
+            meetingBriefingContent.innerHTML = '';
+            flightOptionsContent.innerHTML = '';
+            navigationStepsList.innerHTML = '';
+
+
+            modalMetaSection.style.display = 'none';
+            modalFromInfo.style.display = 'none';
+            modalReceivedInfo.style.display = 'none';
+            modalMeetingTime.style.display = 'none';
+            modalMeetingLocation.style.display = 'none';
+            modalBookingSource.style.display = 'none';
+            modalMeetingDetailsSection.style.display = 'none';
+            modalMeetingAttachmentsSection.style.display = 'none';
+            modalPreviousVisitSummarySection.style.display = 'none';
+            subStepsSection.style.display = 'none';
+            meetingBriefingSection.style.display = 'none';
+            flightOptionsSection.style.display = 'none';
+            mapNavigationSection.style.display = 'none';
+            modalFooterButtons.innerHTML = ''; 
+
+            if (modalType === "meeting") {
+                modalMetaSection.style.display = 'block';
+                modalMeetingTime.style.display = 'block';
+                modalMeetingTimeText.textContent = currentModalData.meetingTime;
+                
+                modalMeetingDetailsSection.style.display = 'block';
+                const attendees = JSON.parse(currentModalData.meetingAttendees || '[]');
+                attendees.forEach(att => {
+                    const li = document.createElement('li');
+                    li.textContent = att;
+                    modalMeetingAttendeesList.appendChild(li);
+                });
+                const agenda = JSON.parse(currentModalData.meetingAgenda || '[]');
+                agenda.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    modalMeetingAgendaList.appendChild(li);
+                });
+
+                let geminiButtonText = '✨ Summarize Docs & Action Items';
+                let geminiButtonHandler = handleMeetingSummary;
+
+                if (currentModalData.meetingLocation) {
+                    modalMeetingLocation.style.display = 'block';
+                    modalMeetingLocationText.textContent = currentModalData.meetingLocation;
+                    if(currentModalData.bookingSource) {
+                        modalBookingSource.style.display = 'block';
+                        modalBookingSourceText.textContent = `Booked via ${currentModalData.bookingSource}`;
+                    }
+                    geminiButtonText = '📍 Get Directions & Map';
+                    geminiButtonHandler = handleGetDirections;
+                }
+                
+                if (currentModalData.meetingAttachments) {
+                    modalMeetingAttachmentsSection.style.display = 'block';
+                    const attachments = JSON.parse(currentModalData.meetingAttachments);
+                    attachments.forEach(att => {
+                        const attDiv = document.createElement('div');
+                        attDiv.className = 'attachment-item';
+                        attDiv.innerHTML = `${att.icon} <span>${att.name}</span>`;
+                        modalMeetingAttachmentsList.appendChild(attDiv);
+                    });
+                     if (currentModalData.meetingTitle === "Product Sync") {
+                        geminiButtonText = '✨ Summarize Attached Docs & Action Items';
+                        geminiButtonHandler = handleMeetingSummary;
+                    } else if (currentModalData.meetingTitle === "Dentist Appointment") {
+                         geminiButtonText = '✨ Summarize Visit Notes & Prep';
+                         geminiButtonHandler = handleMeetingSummary;
+                    }
+                }
+                 if (currentModalData.previousVisitSummary) {
+                    modalPreviousVisitSummarySection.style.display = 'block';
+                    modalPreviousVisitSummaryText.textContent = currentModalData.previousVisitSummary;
+                }
+
+                const actionButton = document.createElement('button');
+                actionButton.id = 'modal-gemini-action-button';
+                actionButton.className = 'gemini-button'; 
+                actionButton.innerHTML = geminiButtonText;
+                actionButton.addEventListener('click', geminiButtonHandler);
+                modalFooterButtons.appendChild(actionButton);
+
+            } else if (modalType === "task") {
+                const taskTitle = currentModalData.taskTitle;
+                const sourceType = currentModalData.sourceType;
+                const receivedInfo = currentModalData.receivedInfo;
+                const detailsTextOrJson = itemElement.dataset.taskDetailsContent || itemElement.dataset.detailsText; // Prioritize taskDetailsContent
+                currentModalData.details = detailsTextOrJson; 
+
+                let footerButton;
+                pTagForDetails.style.display = 'none'; 
+
+                if (sourceType === "iMessage" && taskTitle === "Review housing comparison") {
+                    modalMetaSection.style.display = 'block';
+                    modalFromInfo.style.display = 'block';
+                    modalReceivedInfo.style.display = 'block';
+                    modalFromText.textContent = "Shared via iMessage";
+                    modalReceivedText.textContent = receivedInfo;
+                    
+                    const initialDescP = document.createElement('p'); 
+                    initialDescP.className = 'overlay-details-text-app';
+                    initialDescP.textContent = itemElement.querySelector('.list-item-subtext-list').textContent; 
+                    modalDetailsContent.appendChild(initialDescP);
+
+                    try {
+                        const houses = JSON.parse(detailsTextOrJson);
+                        const comparisonContainer = document.createElement('div');
+                        comparisonContainer.className = 'housing-comparison-container';
+                        houses.forEach(house => {
+                            const card = document.createElement('div');
+                            card.className = 'housing-card';
+                            if (house.betterFit) {
+                                card.classList.add('best-fit');
+                                const badge = document.createElement('span');
+                                badge.className = 'best-fit-badge';
+                                badge.textContent = 'Best Fit ✨';
+                                card.appendChild(badge);
+                            }
+                            card.innerHTML = `
+                                <h5>${house.address}</h5>
+                                <p><strong>Price:</strong> ${house.price}</p>
+                                <p><strong>Size:</strong> ${house.sqft} (${house.beds} bed, ${house.baths} bath)</p>
+                                <p><strong>Key Features:</strong></p>
+                                <ul>${house.features.map(f => `<li>${f}</li>`).join('')}</ul>
+                                ${house.realtorLink && house.realtorLink !== "#" ? `<p><a href="${house.realtorLink}" target="_blank" class="text-[var(--accent-color-light)] dark:text-[var(--accent-color-dark)] hover:underline">View Listing</a></p>` : ''}
+                            `;
+                            comparisonContainer.appendChild(card);
+                        });
+                        modalDetailsContent.appendChild(comparisonContainer);
+                    } catch (e) {
+                        const errorPTag = document.createElement('p');
+                        errorPTag.className = 'overlay-details-text-app';
+                        errorPTag.textContent = "Error displaying housing comparison.";
+                        modalDetailsContent.appendChild(errorPTag);
+                    }
+                    footerButton = document.createElement('button');
+                    footerButton.className = 'action-button';
+                    footerButton.innerHTML = '💬 Respond to Natasha';
+                    footerButton.addEventListener('click', () => showTemporaryMessage('Simulating opening a message to Natasha...'));
+
+                } else { 
+                    pTagForDetails.style.display = 'block'; 
+                    if (taskTitle === "Sign insurance renewal") {
+                        try {
+                            const insuranceDetails = JSON.parse(detailsTextOrJson); 
+                            pTagForDetails.innerHTML = `
+                                <strong>Policy ID:</strong> ${insuranceDetails.policyId || 'N/A'}<br>
+                                <strong>Vehicle:</strong> ${insuranceDetails.vehicle}<br>
+                                <strong>Plate:</strong> ${insuranceDetails.plate}<br>
+                                <strong>Current Expiry:</strong> ${insuranceDetails.currentExpiry}<br>
+                                <strong>Coverage:</strong> ${insuranceDetails.coverageSummary || 'N/A'}<br>
+                                <strong>Renewal Premium:</strong> ${insuranceDetails.renewalPremium}<br>
+                                <strong>Payment Due:</strong> ${insuranceDetails.paymentDueDate}<br>
+                                <strong>Insurer:</strong> ${insuranceDetails.insuranceCompany || 'N/A'}
+                            `;
+                        } catch(e) { 
+                            console.error("Error parsing insurance details from JSON:", detailsTextOrJson, e);
+                            pTagForDetails.textContent = "Could not display insurance details."; 
+                        }
+                    } else {
+                        pTagForDetails.textContent = detailsTextOrJson;
+                    }
+                    if (!modalDetailsContent.contains(pTagForDetails)) {
+                        modalDetailsContent.appendChild(pTagForDetails);
+                    }
+
+
+                    if (sourceType === "Gmail" || sourceType === "Whatsapp" || sourceType === "Wife") {
+                        modalMetaSection.style.display = 'block';
+                        modalFromInfo.style.display = 'block';
+                        modalReceivedInfo.style.display = 'block';
+                        modalFromText.textContent = sourceType === "Wife" ? "Your Wife" : `Dia Assistant via ${sourceType}`;
+                        modalReceivedText.textContent = receivedInfo;
+                    }
+                    
+                    if (taskTitle === "Book SFO to NYC flights") {
+                        footerButton = document.createElement('button');
+                        footerButton.id = 'gemini-find-flights-button';
+                        footerButton.className = 'gemini-button';
+                        footerButton.innerHTML = '✈️ Find Flights (SFO to NYC, June 2nd)';
+                        footerButton.addEventListener('click', handleFindFlights);
+                    } else if (taskTitle === "Sign insurance renewal") {
+                        footerButton = document.createElement('button');
+                        footerButton.className = 'action-button';
+                        footerButton.innerHTML = 'Renew Insurance';
+                        footerButton.addEventListener('click', () => showTemporaryMessage('Simulating insurance renewal process...'));
+                    }
+                    else {
+                        footerButton = document.createElement('button');
+                        footerButton.id = 'gemini-task-breakdown-button';
+                        footerButton.className = 'gemini-button';
+                        footerButton.innerHTML = '✨ Break down task';
+                        footerButton.addEventListener('click', handleTaskBreakdown);
+                    }
+                }
+                if(footerButton) modalFooterButtons.appendChild(footerButton);
+            }
+            modalOverlay.classList.add('visible');
+        }
+
+        document.querySelectorAll('.list-item-actionable, .list-item-completed.clickable, .clickable-meeting').forEach(item => {
+            item.addEventListener('click', () => populateModal(item));
+        });
+
+        if (modalBackButton && modalOverlay) {
+            modalBackButton.addEventListener('click', () => {
+                modalOverlay.classList.remove('visible');
+            });
+        }
+        if (modalOverlay) { 
+            modalOverlay.addEventListener('click', function(event) {
+                if (event.target === modalOverlay) {
+                    modalOverlay.classList.remove('visible');
+                }
+            });
+        }
+
+        async function callGeminiApi(prompt, buttonElement, contentElement, spinnerElement, isFlightSearch = false, isNavigation = false) {
+            buttonElement.classList.add('loading');
+            buttonElement.disabled = true;
+            const originalButtonText = buttonElement.innerHTML;
+            buttonElement.innerHTML = '<div class="spinner"></div> Generating...';
+            
+            contentElement.innerHTML = ''; 
+            spinnerElement.style.display = 'block';
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API request failed: ${errorData.error?.message || response.status}`);
+                }
+                const result = await response.json();
+                spinnerElement.style.display = 'none';
+
+                if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    if (isFlightSearch) {
+                        const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                        let currentFlight = {};
+                        let flightsFound = 0;
+                        lines.forEach(line => {
+                            const parts = line.split(':');
+                            if (parts.length < 2) return; 
+                            const key = parts[0].trim();
+                            const value = parts.slice(1).join(':').trim();
+
+                            if (key === "Airline") currentFlight.airline = value;
+                            else if (key === "Departure") currentFlight.departure = value;
+                            else if (key === "Arrival") currentFlight.arrival = value;
+                            else if (key === "Duration") currentFlight.duration = value;
+                            else if (key === "Price") currentFlight.price = value;
+
+                            if (currentFlight.airline && currentFlight.departure && currentFlight.arrival && currentFlight.price) {
+                                flightsFound++;
+                                const card = document.createElement('div');
+                                card.className = 'flight-card';
+                                card.innerHTML = `
+                                    <h5>${currentFlight.airline}</h5>
+                                    <p><strong>Departs:</strong> ${currentFlight.departure}</p>
+                                    <p><strong>Arrives:</strong> ${currentFlight.arrival}</p>
+                                    <p><strong>Duration:</strong> ${currentFlight.duration || 'N/A'}</p>
+                                    <p><strong>Price:</strong> ${currentFlight.price}</p>
+                                    <button class="select-flight-button">Select Flight</button>
+                                `;
+                                card.querySelector('.select-flight-button').addEventListener('click', () => {
+                                    showTemporaryMessage(`Selected flight: ${currentFlight.airline} - ${currentFlight.departure}`);
+                                    console.log("Selected flight:", currentFlight);
+                                });
+                                contentElement.appendChild(card);
+                                currentFlight = {}; 
+                            }
+                        });
+                         if (flightsFound === 0) {
+                            contentElement.innerHTML = '<p>No valid flight options found or unable to parse results.</p>';
+                        }
+                    } else if (isNavigation) {
+                        const steps = text.split('\n').map(step => step.trim()).filter(step => step.length > 0);
+                        if (steps.length > 0) {
+                            steps.forEach(step => {
+                                const li = document.createElement('li');
+                                li.textContent = step.replace(/^[\s*-\d\.]+\s*/, ''); 
+                                contentElement.appendChild(li);
+                            });
+                        } else { contentElement.innerHTML = '<li>Could not generate directions.</li>'; }
+                    }
+                     else if (prompt.includes("Summarize related documents") || prompt.includes("Summarize Attached Docs") || prompt.includes("Summarize Visit Notes")) { 
+                        contentElement.innerHTML = text.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+                        if (contentElement.innerHTML && !contentElement.innerHTML.startsWith('<p>')) {
+                            contentElement.innerHTML = '<p>' + contentElement.innerHTML + '</p>';
+                        }
+                    } else { 
+                        const steps = text.split('\n').map(step => step.trim()).filter(step => step.length > 0);
+                        if (steps.length > 0) {
+                            steps.forEach(step => {
+                                const li = document.createElement('li');
+                                li.textContent = step.replace(/^[\s*-\d\.]+\s*/, ''); 
+                                contentElement.appendChild(li);
+                            });
+                        } else { contentElement.innerHTML = '<li>No specific items generated.</li>'; }
+                    }
+                } else { 
+                    contentElement.innerHTML = '<li>Could not generate content at this time.</li>';
+                    console.error('Unexpected API response:', result);
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                spinnerElement.style.display = 'none';
+                contentElement.innerHTML = `<li>Error: ${error.message}</li>`;
+                showTemporaryMessage('Failed to get insights from Dia.', true);
+            } finally {
+                if (isNavigation) { 
+                     buttonElement.innerHTML = '🗺️ Open in Maps'; 
+                     buttonElement.classList.remove('loading');
+                } else {
+                    buttonElement.classList.remove('loading');
+                    buttonElement.disabled = false;
+                    buttonElement.innerHTML = originalButtonText;
+                }
+            }
+        }
+        
+        async function handleTaskBreakdown() {
+            subStepsSection.style.display = 'block';
+            const prompt = `Break down the following task into a short list of actionable sub-steps. Provide the steps as a simple list (e.g., using hyphens or numbers). Task Title: "${currentModalData.taskTitle}". Task Details: "${currentModalData.details}"`;
+            const button = document.getElementById('gemini-task-breakdown-button') || document.getElementById('modal-gemini-action-button'); 
+            await callGeminiApi(prompt, button, subStepsListContent, geminiSubstepsSpinner);
+        }
+
+        async function handleMeetingSummary() {
+            meetingBriefingSection.style.display = 'block';
+            let prompt;
+            if (currentModalData.meetingTitle === "Product Sync" && currentModalData.meetingAttachments) {
+                 const attachments = JSON.parse(currentModalData.meetingAttachments);
+                 const docNames = attachments.map(a => a.name).join(" and ");
+                 prompt = `For the upcoming meeting titled "${currentModalData.meetingTitle}" with attendees ${currentModalData.meetingAttendees} and agenda: ${currentModalData.meetingAgenda}. The key documents for this meeting are ${docNames}. Please provide a concise summary of these documents and list key action items for me based on them. Format the response clearly with headings for 'Document Summary' and 'Action Items'.`;
+            } else if (currentModalData.meetingTitle === "Dentist Appointment" && currentModalData.previousVisitSummary) {
+                prompt = `For my upcoming "${currentModalData.meetingTitle}" with ${currentModalData.meetingAttendees} for "${currentModalData.meetingAgenda}". My previous visit summary was: "${currentModalData.previousVisitSummary}". The attachments are ${currentModalData.meetingAttachments ? JSON.parse(currentModalData.meetingAttachments).map(a=>a.name).join(' and ') : 'not specified'}. Please summarize any relevant information from the previous visit and suggest preparation points or questions I should ask. Format clearly.`;
+            }
+            else { // Generic meeting summary
+                prompt = `For the upcoming meeting titled "${currentModalData.meetingTitle}" with attendees ${currentModalData.meetingAttendees} and agenda: ${currentModalData.meetingAgenda}. Please provide a concise summary of hypothetical related documents I should be aware of and list key action items for me. Format the response clearly with headings for 'Document Summary' and 'Action Items'.`;
+            }
+            const button = document.getElementById('modal-gemini-action-button');
+            await callGeminiApi(prompt, button, meetingBriefingContent, geminiBriefingSpinner);
+        }
+        
+        async function handleGetDirections() {
+            mapNavigationSection.style.display = 'block';
+            mapPlaceholder.style.display = 'block'; 
+            mapPlaceholder.innerHTML = `<img src="https://placehold.co/300x150/${currentTheme === 'dark' ? '334155' : 'e0e0e0'}/${currentTheme === 'dark' ? '94a3b8' : '757575'}?text=Map+to+${encodeURIComponent(currentModalData.meetingLocation.split(',')[0])}" alt="Map to ${currentModalData.meetingLocation}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">`;
+
+            const prompt = `Provide brief turn-by-turn directions from Current Location to "${currentModalData.meetingLocation}". List the steps clearly.`;
+            const button = document.getElementById('modal-gemini-action-button');
+            await callGeminiApi(prompt, button, navigationStepsList, geminiNavigationSpinner, false, true);
+        }
+
+
+        async function handleFindFlights() {
+            flightOptionsSection.style.display = 'block';
+            const prompt = `Find flight options from SFO to NYC for June 2nd, 2025. Please provide 2-3 options. For each option, list the following on separate lines: Airline, Departure (SFO with time), Arrival (NYC with time), Duration, and Price (e.g., approx. $XXX). Example for one option:\nAirline: JetBlue\nDeparture: SFO 08:00 AM\nArrival: JFK 04:30 PM\nDuration: 5h 30m\nPrice: ~$250`;
+            const button = document.getElementById('gemini-find-flights-button');
+            await callGeminiApi(prompt, button, flightOptionsContent, geminiFlightSpinner, true);
+        }
+
+
+        // Footer message function
+        function showTemporaryMessage(message, isError = false) {
+            const existingMessageBox = document.getElementById('tempMessageBox');
+            if (existingMessageBox) existingMessageBox.remove();
+            const messageBox = document.createElement('div');
+            messageBox.id = 'tempMessageBox';
+            messageBox.textContent = message;
+            let bgColor = isError ? 'var(--accent-color-light)' : '#333';
+            if (document.body.classList.contains('dark')) {
+                bgColor = isError ? 'var(--accent-color-dark)' : '#4A5568';
+            }
+            Object.assign(messageBox.style, {
+                position: 'fixed', bottom: '80px', 
+                left: '50%', transform: 'translateX(-50%)',
+                backgroundColor: bgColor, color: 'white', padding: '10px 20px', 
+                borderRadius: '8px', zIndex: '1001', 
+                fontSize: '0.875rem', 
+                boxShadow: '0 2px 10px rgba(0,0,0,0.15)'
+            });
+            document.body.appendChild(messageBox);
+            setTimeout(() => { if (document.body.contains(messageBox)) document.body.removeChild(messageBox); }, 3000);
+        }
+        
+        const searchInput = document.querySelector('.search-input');
+        const talkButton = document.getElementById('talkButton');
+        const sendButton = document.getElementById('sendButton');
+        let sendButtonWasClicked = false; 
+
+        if (searchInput && talkButton && sendButton) {
+            searchInput.addEventListener('focus', () => {
+                talkButton.style.display = 'none';
+                sendButton.style.display = 'flex'; 
+                if(searchInput.value.trim() !== '') {
+                    sendButton.classList.add('active');
+                } else {
+                    sendButton.classList.remove('active');
+                }
+            });
+
+            searchInput.addEventListener('blur', () => {
+                setTimeout(() => {
+                    if (!sendButtonWasClicked) { 
+                        talkButton.style.display = 'flex';
+                        sendButton.style.display = 'none';
+                        sendButton.classList.remove('active');
+                    }
+                    sendButtonWasClicked = false; 
+                }, 100); 
+            });
+
+            searchInput.addEventListener('input', () => {
+                if(searchInput.value.trim() !== '') {
+                    sendButton.classList.add('active');
+                } else {
+                    sendButton.classList.remove('active');
+                }
+            });
+            
+            function triggerSearch() {
+                const searchTerm = searchInput.value;
+                if (searchTerm.trim() !== '') {
+                    showTemporaryMessage(`Searching for: ${searchTerm}`);
+                    console.log('Search initiated for:', searchTerm);
+                    searchInput.value = ''; 
+                    sendButton.classList.remove('active'); 
+                    talkButton.style.display = 'flex';
+                    sendButton.style.display = 'none';
+                    searchInput.blur(); 
+                } else {
+                    showTemporaryMessage('Please enter a search term or command.', true);
+                }
+            }
+
+            sendButton.addEventListener('mousedown', () => { 
+                sendButtonWasClicked = true;
+            });
+            sendButton.addEventListener('click', () => {
+                triggerSearch();
+            });
+
+            searchInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); 
+                    sendButtonWasClicked = true; 
+                    triggerSearch();
+                }
+            });
+            
+            talkButton.addEventListener('click', () => showTemporaryMessage('Voice input activated (simulated).'));
+        }
+    </script>
+</body>
+</html>
