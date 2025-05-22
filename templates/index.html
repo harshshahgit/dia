@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dia - Personal Assistant Console</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Add Material Icons for better UI elements -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><span class="logo-text">Dia</span> <span class="subtitle">Personal Assistant</span></h1>
+        </div>
+    </header>
+    <main>
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="data">
+                <span class="material-icons">storage</span> DATA
+            </button>
+            <button class="tab-button" data-tab="actions">
+                <span class="material-icons">list_alt</span> ACTIONS
+            </button>
+        </nav>
+
+        <div id="data-content" class="tab-content active">
+            <h2>Raw Data Sources</h2>
+            <div class="data-section">
+                <h3><span class="material-icons">email</span> Emails</h3>
+                <pre id="emails-data">Loading emails...</pre>
+            </div>
+            <div class="data-section">
+                <h3><span class="material-icons">chat</span> Chats</h3>
+                <pre id="chats-data">Loading chats...</pre>
+            </div>
+        </div>
+
+        <div id="actions-content" class="tab-content">
+            <h2><span class="material-icons">lightbulb</span> Suggested Actions</h2>
+            <div id="actions-list"></div>
+        </div>
+    </main>
+
+    <aside id="action-details-panel">
+        <button id="close-panel-button" aria-label="Close panel">
+            <span class="material-icons">close</span>
+        </button>
+        <h2>Action Details</h2>
+        <div id="action-details-content"></div>
+    </aside>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 

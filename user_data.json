@@ -1,0 +1,14 @@
+{
+  "date_of_birth": "1990-01-01",
+  "license_number": "XZ12345",
+  "phone_number": "555-0102",
+  "address": "123 Main St, Anytown, USA",
+  "vehicle_details": {
+    "make": "Honda",
+    "model": "Civic",
+    "year": 2022,
+    "license_plate": "ABC-123"
+  },
+  "insurance_policy_number": "POL987654",
+  "passport_number": "US12345678"
+} 
