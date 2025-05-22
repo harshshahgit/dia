@@ -83,6 +83,28 @@ def get_user_data_keys(keys_to_find):
 
 # --- Mock Data ---
 mock_data = {
+        "chats": [
+        {
+            "id": "chat_1",
+            "contact_name": "Vikash",
+            "platform": "WhatsApp",
+            "messages": [
+                {"sender": "Vikash", "text": "All fine bhai. But bone is chipped and it will remain like that for life", "timestamp": "2025-05-17T09:15:00Z"},
+                {"sender": "Vikash", "text": "Should not have any issues tho as per doctor", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Harsh", "text": "Okay that's good", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Harsh", "text": "How does a chipped bone work btw? Is it broken and inside the body?", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Vikash", "text": "It’s separated from main ankle bone", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Harsh", "text": "Why did this happen?", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Vikash", "text": "And now in between muscle and it will be like that", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Harsh", "text": "And how could this have been avoided? Just for general knowledge", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Vikash", "text": "My bone fully chipped from bottom and it can not reattach sometimes if it’s chipped apart", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Vikash", "text": "No impact on functionality", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Vikash", "text": "It depends on fracture. Can not do anything", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Harsh", "text": "Haan but how do you start doing normal things? How to increase the load?", "timestamp": "2025-05-17T09:15:30Z"},
+                {"sender": "Vikash", "text": "You should also check the ankle checked. I think it might be covered in the insurance", "timestamp": "2025-05-17T09:15:30Z"},
+            ]
+        }
+    ],
     "emails": [
         {
             "id": "email_1",
@@ -91,52 +113,6 @@ mock_data = {
             "subject": "Your Driving License is Expiring Soon",
             "body": "Dear User, your driving license XZ12345 is due for renewal by July 30th, 2025. Please visit our website to start the process.",
             "received_at": "2025-05-15T10:00:00Z"
-        },
-        {
-            "id": "email_2",
-            "from": "Best Deals Online <deals@bestdeals.com>",
-            "to": "user@example.com",
-            "subject": "Flash Sale on Electronics!",
-            "body": "Don't miss out on our summer flash sale. Up to 50% off on laptops, headphones, and more!",
-            "received_at": "2025-05-16T14:30:00Z"
-        },
-        {
-            "id": "email_3",
-            "from": "Utility Co <billing@utility.com>",
-            "to": "user@example.com",
-            "subject": "Your electricity bill is due",
-            "body": "Your bill for $75.50 for account 98765 is due on June 1st, 2025.",
-            "received_at": "2025-05-18T09:00:00Z"
-        }
-    ],
-    "chats": [
-        {
-            "id": "chat_1",
-            "contact_name": "Sarah (Wife)",
-            "platform": "WhatsApp",
-            "messages": [
-                {"sender": "Sarah", "text": "Hey, have you thought about what to get Mom for her birthday next week? It's on the 25th.", "timestamp": "2025-05-17T09:15:00Z"},
-                {"sender": "User", "text": "Oh right, it's coming up! Any ideas?", "timestamp": "2025-05-17T09:15:30Z"},
-                {"sender": "Sarah", "text": "Maybe a new gardening set? She mentioned wanting one. Or that book she was talking about?", "timestamp": "2025-05-17T09:16:00Z"}
-            ]
-        },
-        {
-            "id": "chat_2",
-            "contact_name": "Alex (Friend)",
-            "platform": "WhatsApp",
-            "messages": [
-                {"sender": "Alex", "text": "Dude, my running shoes are totally worn out. Need to grab a new pair before the marathon training starts next month.", "timestamp": "2025-05-17T11:05:00Z"},
-                {"sender": "User", "text": "Same here, actually. Let me know if you find any good ones. My current ones are falling apart.", "timestamp": "2025-05-17T11:05:45Z"}
-            ]
-        },
-        {
-            "id": "chat_3",
-            "contact_name": "Project Team",
-            "platform": "Slack",
-            "messages": [
-                {"sender": "Manager", "text": "Quick reminder: Project Phoenix slides are due EOD Friday. Please make sure your sections are updated.", "timestamp": "2025-05-18T10:30:00Z"},
-                {"sender": "User", "text": "Got it, will finalize my part this afternoon.", "timestamp": "2025-05-18T10:30:45Z"}
-            ]
         }
     ]
 }
