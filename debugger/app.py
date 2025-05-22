@@ -423,8 +423,6 @@ def execute_dia_action(action_id):
         
     # Execute the action and get detailed results
     research_result = llm_execute_action(action_data)
-    
-    print(f"Research result: {research_result}")
 
     return jsonify({
         "action_id": action_id,
